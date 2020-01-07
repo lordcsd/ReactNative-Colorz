@@ -1,0 +1,95 @@
+import React from "react";
+import { StyleSheet, Text, View, FlatList } from "react-native";
+const makeid = length => {
+  let result = "";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+const Todos = [
+  {
+    name: 'Study',
+    id: 1
+  },
+  {
+    name: 'visit',
+    id: 2
+  },
+  { name: 'Code', id: 27},
+  { name: 'Walk', id: 20 },
+  { name: 'Bath the dog', id: 24 },
+  { name: 'Shopping', id: 25 },
+  { name: 'Clear workspace', id: 22 },
+  { name: 'sleep', id: 26 },
+  { name: 'Set the day plan', id: 23 },
+  { name: 'Eat', id: 29 },
+  { name: 'play soccer', id: 277 },
+  { name: 'Pray', id: 2773 },
+  { name: 'watch netflix', id: 233 },
+  { name: 'meditation', id: 212 }
+]
+export default class Todo extends React.Component {
+  render() {
+    return (
+      //container ViMath.random()ew
+      <View style={styles.main}>
+        {/* Header View */}
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}> Menu </Text>
+          <Text style={styles.headerText}> Todo App </Text>
+          <Text style={styles.headerText}> Settings </Text>
+        </View>
+
+
+
+        {/* Body View */}
+        <View style={{ flex: 5,  padding: 10 }}>
+          <FlatList
+            data={Todos}
+            renderItem={({ item }) => <Text style={styles.todoText}>{item.name}</Text>}
+            keyExtractor={item => makeid(5)}
+          />
+        </View>
+
+        {/* Footer View */}
+        <View style={{ flex: 1, backgroundColor: '#222e50' }}></View>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  main: {
+    flex: 1
+  },
+  headerText: {
+    color: "white",
+    fontSize: 20,
+  },
+  headerContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: '#222e50',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderBottomColor:'#ffffff',
+    borderBottomWidth:0.5,
+  },
+  todoText: {
+    color: '#222e50',
+    fontSize: 16,
+    backgroundColor:  'transparent',
+    padding: 14,
+    marginTop: 10,
+    borderRadius: 5,
+    borderWidth: .5,
+    borderColor: '#222e50'
+  }
+});
