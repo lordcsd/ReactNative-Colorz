@@ -1,8 +1,12 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import React,{Component} from 'react';
+import {View, Text, AsyncStorage} from 'react-native';
 
-export default class ColorPalettes extends Component {
-  render() {
-    return <View></View>;
-  }
+export default class Palettes extends Component{
+    render(){
+        return(
+            <View>
+                <Text>Manage color palettes</Text>
+            </View>
+        )
+    }
 }
