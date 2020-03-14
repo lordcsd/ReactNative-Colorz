@@ -69,9 +69,9 @@ export default class Color extends Component {
       }
     } else if (comp1[2] < comp1[0]) {
       if (comp1[0] < comp1[1]) {
-        darkenedEnd = [comp1[2], comp1[2], Math.round(comp1[1] + comp1[1] / 3)];
+        darkenedEnd = [comp1[2], comp1[2], Math.round(comp1[2] + comp1[2] / 3)];
       } else {
-        darkenedEnd = [comp1[2], Math.round(comp1[1] + comp1[1] / 3), comp1[2]];
+        darkenedEnd = [comp1[2], Math.round(comp1[2] + comp1[2] / 3), comp1[2]];
       }
     }
 
