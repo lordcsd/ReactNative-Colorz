@@ -100,7 +100,7 @@ export default class SavedColorPalettes extends Component {
         <Text
           style={{
             textAlign: 'center',
-            fontSize:this.state.fetchedKeys.length == 0 && this.state.searchKey.length == 0 ? 0 :20,
+            fontSize:this.state.fetchedKeys.length > 0 && this.state.searchKey.length < 0 ? 0 :20,
             color: 'rgb(60,60,60)',
           }}>
           {this.state.fetchedKeys.length == 0 && this.state.searchKey.length < 1
