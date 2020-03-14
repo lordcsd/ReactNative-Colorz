@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
-  ScrollView,
+  AsyncStorage,
 } from 'react-native';
 import separated from './split';
 import {Actions} from 'react-native-router-flux';
@@ -23,7 +23,11 @@ export default class ColorList extends Component {
     let newArray = [];
     if (this.state.text.length > 0) {
       for (let i = 0; i < 141; i = i + 1) {
-        if (separated[i].name.includes(this.state.text) == true) {
+        if (
+          separated[i].name
+            .toLowerCase()
+            .includes(this.state.text.toLowerCase()) == true
+        ) {
           newArray.push(separated[i]);
           this.setState({
             filteredArray: newArray,
@@ -40,31 +44,52 @@ export default class ColorList extends Component {
           <TextInput
             style={styles.TextInput}
             placeholder="Enter search text"
-            placeholderTextColor="white"
-            onChangeText={async text => {
-              await this.setState({text});
+            onChangeText={text => {
+              this.setState({text});
               this.filterArray();
             }}
             value={this.state.text}
           />
-          <TouchableOpacity onPress={() =>(this.state.text.length == 0) ? alert("Please enter Text") : this.filterArray}>
+          <TouchableOpacity
+            onPress={() => {
+              this.state.text.length == 0
+                ? alert('Please enter Text')
+                : this.filterArray;
+            }}>
             <Image style={{height: 30, width: 30}} source={SearchIcon} />
           </TouchableOpacity>
         </View>
-        <List
-          data={this.state.filteredArray}
-          reload={this.filterArray}
-          text={this.state.text}
-        />
+
+        <View style={{flexDirection: 'row'}}>
+          <List
+            data={this.state.filteredArray}
+            reload={this.filterArray}
+            text={this.state.text}
+          />
+          <View style={{width: '3%', height: '98%'}}>
+            {separated.map(line => (
+              <View
+                style={{
+                  height: '0.70921986%',
+                  backgroundColor: `${line.hex}`,
+                }}></View>
+            ))}
+          </View>
+        </View>
       </View>
     );
   }
 }
 
+let FlatListFootr = props => {
+  return <View style={{height: 100}}></View>;
+};
+
 let List = props => {
   return (
     <FlatList
       data={props.text.length == 0 ? separated : props.data}
+      ListFooterComponent={FlatListFootr}
       renderItem={({item}) => (
         <View>
           <TouchableOpacity
@@ -83,8 +108,7 @@ let List = props => {
             <View
               style={{
                 borderColor: 'black',
-                borderWidth: 1,
-                height: 60,
+                height: 50,
                 backgroundColor: `${item.name.toLowerCase()}`,
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -114,17 +138,16 @@ let styles = StyleSheet.create({
   },
   searchBlock: {
     flexDirection: 'row',
-    backgroundColor: 'rgb(50,50,150)',
-    height: 60,
+    height: 45,
     alignItems: 'center',
     justifyContent: 'space-around',
+    backgroundColor: 'rgb(255,255,255)',
   },
   TextInput: {
     width: '80%',
-    height: 40,
+    height: 35,
     borderWidth: 2,
-    borderColor: 'white',
     borderRadius: 5,
-    color: 'white',
+    borderColor: 'rgb(1,117,255)',
   },
 });

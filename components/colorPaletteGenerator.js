@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   AsyncStorage,
   TextInput,
+  ScrollView,
 } from 'react-native';
-
-let showPrompt = false;
 
 let PaletteGenerator = props => {
   const [state, setState] = useState({
@@ -18,33 +17,48 @@ let PaletteGenerator = props => {
     gradientToInverse: props.colorGroups.gradientToInverse,
     harmonics: props.colorGroups.harmonics,
     complimentary: props.colorGroups.complimentary,
-    compliFollow: props.colorGroups.compliFollow,
     gradientToRandom: props.colorGroups.gradientToRandom,
+    compGradToLighter: props.colorGroups.compGradToLighter,
+    darkenedEnd: props.colorGroups.darkenedEnd,
+    compInbetween: props.colorGroups.compInbetween,
     showPrompt: false,
     final: [],
   });
 
-  let pattern1 = [state.main, ...state.gradientToBrighter];
+  let pattern1 = [...state.gradientToBrighter];
   let pattern2 = [state.main, ...state.gradientToInverse, state.inverse];
   let pattern3 = [
     state.complimentary[1],
-    state.main,
     state.complimentary[0],
+    state.main,
     state.complimentary[2],
-    state.compliFollow,
+    state.complimentary[3],
   ];
   let pattern4 = [...state.harmonics];
-  let pattern5 = [state.main, ...state.gradientToRandom];
+  let pattern5 = [...state.gradientToRandom];
+  let pattern6 = [...state.compGradToLighter];
+  let pattern7 = [...state.darkenedEnd];
+  let pattern8 = [...state.compInbetween];
 
-  let patterns = [pattern1, pattern2, pattern3, pattern4, pattern5];
+  let patterns = [
+    pattern1,
+    pattern2,
+    pattern3,
+    pattern4,
+    pattern5,
+    pattern6,
+    pattern7,
+    pattern8,
+  ];
 
-  let hidePrompt = () => {
+  let UnShowPrompt = () => {
     setState({...state, showPrompt: false});
   };
 
   return (
     <View style={styles.main}>
-      <View style={{marginTop: 20}}>
+      <Text style={styles.underText}>Tap preferred color palette to save</Text>
+      <View>
         {patterns.map(pat => {
           return (
             <TouchableOpacity
@@ -56,13 +70,29 @@ let PaletteGenerator = props => {
                 style={[{backgroundColor: `${pat[0]}`}, styles.blocks]}></View>
 
               <View
-                style={[{backgroundColor: `${pat[1]}`,borderRightWidth:1,borderLeftWidth:1}, styles.blocks]}></View>
+                style={[
+                  {
+                    backgroundColor: `${pat[1]}`,
+                    borderRightWidth: 1,
+                    borderLeftWidth: 1,
+                    borderColor: 'rgb(100,100,100)',
+                  },
+                  styles.blocks,
+                ]}></View>
 
               <View
                 style={[{backgroundColor: `${pat[2]}`}, styles.blocks]}></View>
 
               <View
-                style={[{backgroundColor: `${pat[3]}`,borderRightWidth:1,borderLeftWidth:1}, styles.blocks]}></View>
+                style={[
+                  {
+                    backgroundColor: `${pat[3]}`,
+                    borderRightWidth: 1,
+                    borderLeftWidth: 1,
+                    borderColor: 'rgb(100,100,100)',
+                  },
+                  styles.blocks,
+                ]}></View>
 
               <View
                 style={[{backgroundColor: `${pat[4]}`}, styles.blocks]}></View>
@@ -70,9 +100,13 @@ let PaletteGenerator = props => {
           );
         })}
       </View>
-      <Text style={styles.underText}>Tap preferred color palette to save</Text>
       {state.showPrompt == true ? (
-        <CustomPrompt hidePrompt={hidePrompt} final={state.final} />
+        <CustomPrompt
+          UnShowPrompt={UnShowPrompt}
+          final={state.final}
+          paletteKeys={state.paletteKeys}
+          refresh={props.refresh}
+        />
       ) : (
         <View></View>
       )}
@@ -83,42 +117,70 @@ let PaletteGenerator = props => {
 let CustomPrompt = props => {
   let [state, setState] = useState({
     paletteName: '',
+    paletteKeys: props.palleteKeys,
+    exists: false,
   });
+
   return (
     <View style={styles.promptStyle}>
       <TextInput
         value={state.paletteName}
+        maxLength={15}
         onChangeText={async text => {
-          await setState({paletteName: text});
+          await setState({
+            paletteName: text == 'edited' ? 'edited1' : text,
+          });
         }}
         placeholder="Enter name here"
-        placeholderTextColor="white"
-        style={styles.promptInput}
+        style={{
+          borderRadius: 6,
+          width: '80%',
+          backgroundColor: `${
+            state.exists == true ? 'rgb(255,160,160)' : 'rgb(220,220,220)'
+          }`,
+        }}
       />
+
+      <Text>{state.exists == true ? 'name already exists' : ''}</Text>
 
       <View style={styles.promptButtonContainer}>
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
+            let allKeys = [];
+            await AsyncStorage.getAllKeys((err, data) => {
+              allKeys = data;
+            });
             if (state.paletteName.length == 0) {
               alert('Please Enter a name');
             } else {
-              let fin = {selected: props.final};
-              AsyncStorage.setItem(
-                JSON.stringify(state.paletteName),
-                JSON.stringify(fin),
-              );
-              props.hidePrompt()
-              alert("Saved")
+              if (allKeys.includes(state.paletteName) == true) {
+                setState({
+                  exists: true,
+                  ...state,
+                });
+              } else {
+                await AsyncStorage.setItem(
+                  state.paletteName,
+                  JSON.stringify(props.final),
+                  (err, data) => {
+                    if (data) console.log('saved');
+                    if (err) console.log('not saved');
+                  },
+                );
+                props.UnShowPrompt();
+                alert(`Save successful!! Goto palettes to view`);
+                props.refresh();
+              }
             }
           }}>
           <View style={styles.promptSave}>
-            <Text>Save</Text>
+            <Text style={{color: 'rgb(30,75,60)'}}>Save</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={props.hidePrompt}>
+        <TouchableOpacity onPress={props.UnShowPrompt}>
           <View style={styles.promptBack}>
-            <Text>Back</Text>
+            <Text style={{color: 'rgb(255,255,255)'}}>Back</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -129,21 +191,21 @@ let CustomPrompt = props => {
 let styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: 'rgb(60,60,60)',
     alignItems: 'center',
+    justifyContent:'center'
   },
   colors: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
-    borderWidth: 10,
+    marginTop: 8,
+    borderWidth: 6,
     borderRadius: 10,
-    borderColor: 'rgb(100,100,100)',
-    width: 250,
+    borderColor: 'rgb(50,50,50)',
+    width: '80%',
   },
   blocks: {
-    height: 50,
-    width: 50,
+    height: 40,
+    width: '20%',
   },
   key1: {
     height: 50,
@@ -169,31 +231,21 @@ let styles = StyleSheet.create({
   },
   buttonText: {color: 'rgb(220,220,220)'},
   underText: {
-    color: 'rgb(220,220,220)',
-    fontSize: 20,
-    marginVertical: 10,
+    color: 'rgb(50,50,50)',
+    fontSize: 20
   },
   promptStyle: {
-    height: 250,
+    height: 150,
     width: '80%',
-    backgroundColor: 'rgba(20,150,150,0.8)',
+    backgroundColor: 'rgb(255,255,255)',
     position: 'absolute',
-    marginTop: 100,
+    marginTop: 60,
     borderRadius: 10,
-    borderWidth: 3,
-    borderColor: 'rgb(100,160,255)',
-  },
-  promptInput: {
-    borderWidth: 2,
-    borderColor: 'white',
-    borderRadius: 6,
-    width: '80%',
-    margin: '10%',
-    color: 'white',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   promptButtonContainer: {
     width: '80%',
-    margin: '10%',
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -202,9 +254,7 @@ let styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: 'rgb(50,220,220)',
-    backgroundColor: 'rgb(30,180,180)',
+    backgroundColor: 'rgb(0,200,100)',
     alignItems: 'center',
   },
   promptBack: {
@@ -212,9 +262,7 @@ let styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: 'rgb(180,60,50)',
-    backgroundColor: 'rgb(220,80,80)',
+    backgroundColor: 'rgb(200,80,80)',
     alignItems: 'center',
   },
 });

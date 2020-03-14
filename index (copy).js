@@ -1,118 +1,140 @@
 import React, {Component} from 'react';
-import {AppRegistry} from 'react-native';
-import {name as appName} from './app.json';
-import Color from './components/Colors';
+import {TouchableOpacity, View, Text, Image} from 'react-native';
 import ColorList from './components/colorList';
-import landingImage from './components/landing.png';
+import Color from './components/Colors';
+import Side from './components/tabBar';
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  AsyncStorage,
-  Image,
-} from 'react-native';
+import {Router, Scene, Drawer} from 'react-native-router-flux';
+import PaletteGenerator from './components/colorPaletteGenerator';
+
+import SavedColorPalettes from './components/SavedColorPalette';
+import EditPalette from './components/editPalettes';
+
+import palettes from './components/icons/palle.png';
+import set from './components/icons/set.png';
+
+import palettes2 from './components/icons/palle2.png';
+import set2 from './components/icons/set2.png';
+
+let FirstRoutes = props => {
+  return (
+    <Router>
+      <Drawer
+        hideNavBar
+        key="drawer"
+        contentComponent={Side}
+        drawerWidth={250}
+        drawerPosition="right">
+        <Scene key="root" navigationBarStyle={{height: 45}}>
+          <Scene
+            key="colorList"
+            component={ColorList}
+            title="Colorlist"
+            initial
+          />
+          <Scene key="colorEdit" component={Color} title="Edit Color" />
+          <scene
+            key="paletteGenerator"
+            component={PaletteGenerator}
+            title="Select Palette"
+          />
+        </Scene>
+      </Drawer>
+    </Router>
+  );
+};
+
+let SecondRoutes = props => {
+  return (
+    <Router>
+      <Scene key="root" navigationBarStyle={{height: 45}}>
+        <Scene
+          key="colorPalettes"
+          component={SavedColorPalettes}
+          title="Color Palettes"
+        />
+        <Scene
+          key="EditColorPalette"
+          component={EditPalette}
+          title="View Color Palette"
+        />
+        <Scene key="colorEdit" component={Color} title="Edit Color" />
+        <scene
+          key="paletteGenerator"
+          component={PaletteGenerator}
+          title="Select Palette"
+        />
+      </Scene>
+    </Router>
+  );
+};
 
 export default class Main extends Component {
-  componentDidMount() {
-    this.setState({choose: 0});
-  }
-
   state = {
-    choose: 0,
+    whichScreen: 0,
+    bottomFooter: true,
   };
 
-  showData = async () => {
-    let gotten = await AsyncStorage.getItem('savedRgb');
-    let d = JSON.parse(gotten);
-    this.setState({choose: d.choose});
-  };
+  selectColor = 'rgb(40,40,40)';
+  unSelectColor = 'rgb(150,150,150)';
 
   render() {
     return (
-      <View showData={this.showData} style={styles.main}>
-        <View style={styles.bottom}>
+      <View style={{flex: 1}}>
+        {this.state.whichScreen === 0 ? <FirstRoutes /> : <SecondRoutes />}
+
+        <View
+          style={{
+            backgroundColor: 'rgb(255,255,255)',
+            height: '8%',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+          }}>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.setState({choose: 1})}>
-            <Text style={styles.writing}>Select Color</Text>
+            style={{alignItems: 'center'}}
+            onPress={() =>
+              this.state.whichScreen == 0 ? '' : this.setState({whichScreen: 0})
+            }>
+            <Image
+              style={{height: 20, width: 20}}
+              source={this.state.whichScreen === 0 ? palettes : palettes2}
+            />
+
+            <Text
+              style={{
+                color: `${
+                  this.state.whichScreen === 1
+                    ? this.unSelectColor
+                    : this.selectColor
+                }`,
+              }}>
+              Colors
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.setState({choose: 2})}>
-            <Text style={styles.writing}>Edit-Color</Text>
+            style={{alignItems: 'center'}}
+            onPress={() =>
+              this.state.whichScreen == 1 ? '' : this.setState({whichScreen: 1})
+            }>
+            <Image
+              style={{height: 20, width: 20}}
+              source={this.state.whichScreen === 1 ? set : set2}
+            />
+            <Text
+              style={{
+                color: `${
+                  this.state.whichScreen === 0
+                    ? this.unSelectColor
+                    : this.selectColor
+                }`,
+              }}>
+              Palettes
+            </Text>
           </TouchableOpacity>
-        </View>
-        <View>
-          {this.state.choose == 1 ? (
-            <ColorList />
-          ) : this.state.choose == 2 ? (
-            <Color />
-          ) : (
-            <ColorList />
-          )}
         </View>
       </View>
     );
   }
 }
-
-let styles = StyleSheet.create({
-  main: {
-    backgroundColor: 'rgb(255,255,255)',
-  },
-  bottom: {
-    height: 60,
-    flexDirection: 'row',
-    width: '100%',
-    backgroundColor: 'rgb(250,100,100)',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderBottomWidth: 4,
-    borderBottomColor: 'black',
-  },
-  button: {
-    backgroundColor: 'rgb(50,50,100)',
-    width: 150,
-    height: 30,
-    alignItems: 'center',
-    borderRadius: 3,
-  },
-  writing: {
-    textAlign: 'center',
-    fontSize: 20,
-    color: 'rgb(255,255,255)',
-  },
-});
-
-let Imager = props => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        backgroundColor: 'rgb(30,34,50)',
-      }}>
-      <Image source={landingImage} style={{height: 150, width: 300}} />
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: 'rgb(0,180,185)',
-          padding: 20,
-          borderRadius: 10,
-        }}
-        onPressIn={() =>which = 2}
-        onPressOut={() =>which = 2}>
-        <Text style={{color: 'rgb(30,34,50)', fontSize: 25}}>
-          Tap here to continue
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-
-AppRegistry.registerComponent(appName, () =>Main);

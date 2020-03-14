@@ -1,26 +1,25 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  AsyncStorage,
+} from 'react-native';
 import homeIcon from '../components/icons/home.png';
 import galleryIcon from '../components/icons/gallery.png';
 import slideShow from '../components/icons/slideShow.png';
 import setting from '../components/icons/settings.png';
 import share from '../components/icons/share.png';
 import send from '../components/icons/send.png';
-import newSplash from '../components/icons/newSplash.png';
-//import Garble from '../components/icons/garble.svg'
-
-//import SvgUri from 'react-native-svg-uri';
+import {Actions} from 'react-native-router-flux';
 
 export default class Side extends Component {
   render() {
     return (
       <View style={styles.whole}>
-        <View style={styles.top}>
-          {/* <SvgUri
-          width="300"
-          height="400"
-          svgXmlData={Garble}/> */}
-        </View>
+        <View style={styles.top}></View>
 
         <View style={styles.flows}>
           <Image source={homeIcon} style={styles.icons} />

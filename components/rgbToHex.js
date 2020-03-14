@@ -9,5 +9,3 @@ let hexToRgb = hex =>{
     var b = bigint & 255;
     return r + ',' + g + ',' + b
 }
-
-console.log(hexToRgb('ffffff'))
