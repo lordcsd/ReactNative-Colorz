@@ -6,6 +6,7 @@ import Side from './components/tabBar';
 
 import {Router, Scene, Drawer} from 'react-native-router-flux';
 import PaletteGenerator from './components/colorPaletteGenerator';
+import ViewPalette from './components/viewPalette'
 
 import SavedColorPalettes from './components/SavedColorPalette';
 import EditPalette from './components/editPalettes';
@@ -15,6 +16,8 @@ import set from './components/icons/set.png';
 
 import palettes2 from './components/icons/palle2.png';
 import set2 from './components/icons/set2.png';
+
+
 
 let FirstRoutes = props => {
   return (
@@ -56,6 +59,11 @@ let SecondRoutes = props => {
         <Scene
           key="EditColorPalette"
           component={EditPalette}
+          title="Edit Color Palette"
+        />
+         <Scene
+          key="ViewColorPalette"
+          component={ViewPalette}
           title="View Color Palette"
         />
         <Scene key="colorEdit" component={Color} title="Edit Color" />

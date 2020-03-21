@@ -544,6 +544,7 @@ export default class Color extends Component {
                 let ranB = Math.round(Math.random() * 80) + 160;
                 let colorGroups = {
                   main: `rgb(${this.state.red},${this.state.green},${this.state.blue})`,
+                  mainSplit:[this.state.red,this.state.green,this.state.blue],
                   inverse: `rgb(${this.state.inverseRed},${this.state.inverseGreen},${this.state.inverseBlue})`,
 
                   gradientToBrighter: [
@@ -621,14 +622,7 @@ export default class Color extends Component {
                     `rgb(${this.state.red},${this.state.green},${this.state.blue})`,
                     `rgb(${this.state.comp2[0]},${this.state.comp2[1]},${this.state.comp2[2]})`,
                     `rgb(${this.state.darkenedEnd2[0]},${this.state.darkenedEnd2[1]},${this.state.darkenedEnd2[2]})`,
-                  ],
-                  compInbetween: [
-                    `rgb(${this.state.comp1[0]},${this.state.comp1[1]},${this.state.comp1[2]})`,
-                    `rgb(${this.state.compInbetween1[0]},${this.state.compInbetween1[1]},${this.state.compInbetween1[2]})`,
-                    `rgb(${this.state.red},${this.state.green},${this.state.blue})`,
-                    `rgb(${this.state.compInbetween2[0]},${this.state.compInbetween2[1]},${this.state.compInbetween2[2]})`,
-                    `rgb(${this.state.comp2[0]},${this.state.comp2[1]},${this.state.comp2[2]})`,
-                  ],
+                  ]
                 };
                 Actions.paletteGenerator({
                   colorGroups: colorGroups,
@@ -823,7 +817,7 @@ let styles = StyleSheet.create({
     backgroundColor: 'rgb(59,59,59)',
   },
   plusAndMinus: {
-    marginVertical: '1%',
+    marginVertical: '3%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',

@@ -12,7 +12,8 @@ import {
 import {Actions} from 'react-native-router-flux';
 import Delete from './icons/delete.png';
 import Edit from './icons/edit.png';
-import SearchIcon from './icons/searchWhite.png';
+import SearchIcon from './icons/searchBlue.png';
+import ViewImage from './icons/view.png';
 
 export default class SavedColorPalettes extends Component {
   state = {
@@ -46,9 +47,6 @@ export default class SavedColorPalettes extends Component {
             });
           }
         }
-      }
-      if (err) {
-        console.log('getAllKeys no working!!');
       }
     });
 
@@ -97,18 +95,31 @@ export default class SavedColorPalettes extends Component {
             />
           </TouchableOpacity>
         </View>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize:this.state.fetchedKeys.length > 0 && this.state.searchKey.length < 0 ? 0 :20,
-            color: 'rgb(60,60,60)',
-          }}>
-          {this.state.fetchedKeys.length == 0 && this.state.searchKey.length < 1
-            ? 'Please create new palettes'
-            : this.state.searchKey.length > 0 && this.state.emptySearch == true
-            ? 'Your search was not found'
-            : ''}
-        </Text>
+
+        {this.state.fetchedKeys.length == 0 &&
+        this.state.searchKey.length < 1 ? (
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              color: 'rgb(60,60,60)',
+            }}>
+            Please create new palettes
+          </Text>
+        ) : this.state.searchKey.length > 0 &&
+          this.state.emptySearch == true ? (
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              color: 'rgb(60,60,60)',
+            }}>
+            Your search was not found
+          </Text>
+        ) : (
+          <View></View>
+        )}
+
         {this.state.showPrompt == false ? (
           <View>
             <List
@@ -151,14 +162,15 @@ export default class SavedColorPalettes extends Component {
           }}
           style={{
             position: 'absolute',
-            left: '80%',
-            top: '80%',
+            left: '85%',
+            top: '90%',
             backgroundColor: 'rgb(255,100,100)',
             height: 40,
             width: 40,
             borderRadius: 35,
             justifyContent: 'center',
             alignItems: 'center',
+            elevation: 8,
           }}>
           <Text
             style={{
@@ -214,8 +226,8 @@ let List = props => {
             <TouchableOpacity
               onPress={() => {
                 let acquired = props.keys[props.groups.indexOf(each1)];
-                Actions.EditColorPalette({
-                  each1: [each1, acquired, props.refresh],
+                Actions.ViewColorPalette({
+                  each1: [each1, acquired],
                 });
               }}
               style={{
@@ -279,18 +291,28 @@ let List = props => {
                 <TouchableOpacity
                   onPress={() => {
                     let acquired = props.keys[props.groups.indexOf(each1)];
+                    Actions.ViewColorPalette({
+                      each1: [each1, acquired],
+                    });
+                  }}>
+                  <Image source={ViewImage} style={{height: 20, width: 30}} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    let acquired = props.keys[props.groups.indexOf(each1)];
                     Actions.EditColorPalette({
                       each1: [each1, acquired],
                     });
                   }}>
-                  <Image source={Edit} style={{height: 30, width: 33}} />
+                  <Image source={Edit} style={{height: 23, width: 25}} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => {
                     props.showPrompt(props.keys[props.groups.indexOf(each1)]);
                   }}>
-                  <Image source={Delete} style={{height: 30, width: 28}} />
+                  <Image source={Delete} style={{height: 23, width: 20}} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -374,6 +396,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: 'rgb(255,255,255)',
+    elevation: 8,
   },
   TextInput: {
     width: '80%',

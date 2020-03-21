@@ -7,7 +7,6 @@ import {
   AsyncStorage,
 } from 'react-native';
 import Slider from 'react-native-slider';
-import separated from './split';
 
 export default class EditPalette extends Component {
   state = {
@@ -122,7 +121,7 @@ export default class EditPalette extends Component {
           style={{
             flexDirection: 'row',
             backgroundColor: 'rgb(50,50,50)',
-            height: "8%",
+            height: '8%',
             justifyContent: 'space-around',
             alignItems: 'center',
           }}>
@@ -132,27 +131,34 @@ export default class EditPalette extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              this.props.each1[2]()
+              this.props.each1[2]();
               AsyncStorage.setItem(
                 this.state.key,
                 JSON.stringify(this.state.eachOne),
               );
-              alert('saved!')
+              alert('saved!');
             }}
             style={{
               backgroundColor: 'rgb(50,200,50)',
-              height: "70%",
+              height: '70%',
               borderRadius: 4,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={{fontSize: 18,paddingHorizontal:5, color: 'rgb(255,255,255)'}}>Save</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                paddingHorizontal: 5,
+                color: 'rgb(255,255,255)',
+              }}>
+              Save
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{
               backgroundColor: 'rgb(220,50,50)',
-              height: "70%",
+              height: '70%',
               borderRadius: 4,
               alignItems: 'center',
               justifyContent: 'center',
@@ -162,7 +168,14 @@ export default class EditPalette extends Component {
                 if (data) this.setState({eachOne: JSON.parse(data)});
               });
             }}>
-            <Text style={{fontSize: 18,paddingHorizontal:5, color: 'rgb(55,55,55)'}}>Undo</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                paddingHorizontal: 5,
+                color: 'rgb(55,55,55)',
+              }}>
+              Undo
+            </Text>
           </TouchableOpacity>
         </View>
         <ColorDisplay
@@ -177,7 +190,12 @@ export default class EditPalette extends Component {
           paletteName={this.state.key}
         />
 
-        <View style={{justifyContent: 'space-around', alignItems: 'center'}}>
+        <View
+          style={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            height: '30%',
+          }}>
           <Slider
             value={this.state.r}
             minimumValue={0}

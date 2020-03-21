@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import separated from './split';
 import {Actions} from 'react-native-router-flux';
-import SearchIcon from './icons/searchWhite.png';
+import SearchIcon from './icons/searchBlue.png';
 
 export default class ColorList extends Component {
   state = {
@@ -142,6 +142,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: 'rgb(255,255,255)',
+elevation:8
   },
   TextInput: {
     width: '80%',
